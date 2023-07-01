@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spinning Wheel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+        }
+        
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Spinning Wheel</h1>
+    <canvas id="wheelCanvas" width="400" height="400"></canvas>
+    <script>
+        // JavaScript code for spinning animation
+        var canvas = document.getElementById('wheelCanvas');
+        var ctx = canvas.getContext('2d');
+        
+        var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
+        var x = canvas.width / 2;
+        var y = canvas.height / 2;
+        var radius = Math.min(canvas.width, canvas.height) / 2;
+        
+        var startAngle = 0;
+        var arc = Math.PI / 3;
+        
+        var spinSpeed = 0.1;  // Adjust spin speed as desired
+        var momentum = 0;
+        var isSpinning = false;
+        
+        var spins = 5;  // Adjust the number of spins as desired
+        var currentSpin = 0;
+        
+        var spinInterval;
+        
+        canvas.addEventListener('mousedown', startSpin);
+        canvas.addEventListener('mouseup', stopSpin);
+        canvas.addEventListener('mouseout', stopSpin);
+        
+        function startSpin() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            momentum = spinSpeed;
+            spinInterval = setInterval(animateSpin, 16);
+        }
+        
+        function stopSpin() {
+            if (!isSpinning) return;
+            
+            isSpinning = false;
+            clearInterval(spinInterval);
+        }
+        
+        function animateSpin() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.beginPath();
+            ctx.arc(x, y, radius, startAngle, startAngle + arc, false);
+            ctx.lineWidth = 100;
+            ctx.strokeStyle = colors[currentSpin % colors.length];
+            ctx.stroke();
+            
+            momentum -= spinSpeed;
+            startAngle += momentum;
+            
+            if (momentum <= 0) {
+                momentum = 0;
+                currentSpin++;
+            }
+            
+            if (currentSpin >= spins) {
+                isSpinning = false;
+                clearInterval(spinInterval);
+            }
+        }
+    </script>
+</body>
+</html>
